@@ -13,26 +13,40 @@ export class ReviewsService {
   //la clase BootcampsService: sin
   //necesidad de instanciar 
   constructor(@InjectRepository(Review) 
-        private bootcampRepository:
+        private reviewRepository:
                 Repository<Review> ){
         }
-  create(createReviewDto: CreateReviewDto) {
-    return 'This action adds a new review';
+  create(payload: any) {
+    const newReview = this.reviewRepository.create(payload);
+    return this.reviewRepository.save(newReview)
   }
 
   findAll() {
-    return this.bootcampRepository.find()
+    return this.reviewRepository.find()
   }
 
   findOne(id: number) {
-    return this.bootcampRepository.findOneBy({id})
+    return this.reviewRepository.findOneBy({id})
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  async update(id: number, payload: any) {
+    //1. encontrar el bootcamp por id
+    const UpdReview = await this.reviewRepository.findOneBy({id});
+    //2. hacer update: agregar cambios del payload 
+    //a la entidad hallada en el punto 1 
+    this.reviewRepository.merge(UpdReview, payload)
+    //3, grabar cambios
+    return this.reviewRepository.save(UpdReview)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
+  async remove(id: number) {
+    //Buscar Curso por id
+    const delReview = await this.reviewRepository.findOneBy({id});
+   // borrar review
+   //Borrado
+    this.reviewRepository.delete(delReview)
+    //3, retonar el bootcap
+    //borrado
+    return delReview
   }
 }

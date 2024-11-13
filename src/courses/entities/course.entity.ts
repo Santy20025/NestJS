@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm'
+import { Bootcamp } from 'src/bootcamps/entities/bootcamp.entity'
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('courses')
 export class Course {
@@ -6,23 +7,40 @@ export class Course {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column('varchar')
+    @Column({type: 'varchar', 
+                    length:100, 
+                    nullable: true})
     title: string
-
-    @Column('varchar')
-    description: string
     
-    @Column('double')
+    @Column({ type: 'tinyint',
+              nullable: true,
+              default: 4
+            
+    })
     weeks: number
 
-    @Column('double')
+    @Column({type: 'decimal',
+             nullable:true
+    })
     tuition: number
 
-    @Column('varchar', {length: 30})
+    @Column({name: 'minimum_skill',
+            type: 'enum',
+            enum: ["Beginner", 
+                    "Intermediate", 
+                    "Advanced"],         
+    })
     minimumSkill: minimumSkill
 
-    @Column('date')
+    @Column({type: 'date',
+            nullable: true
+    })
     createdAt: Date
+
+    @ManyToOne( () => Bootcamp , 
+                (bootcamp) => bootcamp.courses)
+
+    bootcamp: Bootcamp
 
 }
 

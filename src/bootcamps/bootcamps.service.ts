@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Delete, Body, NotFoundException } from '@nestjs/common';
 import { CreateBootcampDto } from './dto/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
 import { Repository } from 'typeorm';
@@ -18,8 +18,12 @@ export class BootcampsService {
         private bootcampRepository:
                 Repository<Bootcamp> ){
         }
-  create(createBootcampDto: CreateBootcampDto) {
-    return 'This action adds a new bootcamp';
+  create(body: CreateBootcampDto) {
+    //1. Crear una instancia de una entiti Bootcamp
+    const newBootcamp = this.bootcampRepository.create(body)
+    //2. grabar esa instancia
+    return this.bootcampRepository.save(newBootcamp)
+    ;
   }
 
   findAll() {
@@ -27,14 +31,42 @@ export class BootcampsService {
   }
 
   findOne(id: number) {
-    return this.bootcampRepository.findOneBy({id})
+    const b = this.bootcampRepository.findOneBy({id});
+    if(!b) {
+      throw new 
+      NotFoundException(`No existe el Bootcamp`);
+    }else{
+      return b;
+    }
+ 
   }
 
-  update(id: number, updateBootcampDto: UpdateBootcampDto) {
-    return `This action updates a #${id} bootcamp`;
+  async update(id: number, body: UpdateBootcampDto) {
+    //1. encontrar el bootcamp por id
+    const UpdBootcamp = await this.bootcampRepository.findOneBy({id});
+
+    if(!UpdBootcamp) {
+      throw new NotFoundException(`No existe el bootcamp`)
+    }
+    //2. hacer update: agregar cambios del payload 
+    //a la entidad hallada en el punto 1 
+    this.bootcampRepository.merge(UpdBootcamp, body)
+    //3, grabar cambios
+    return this.bootcampRepository.save(UpdBootcamp)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bootcamp`;
+  async remove(id: number) {
+    //Buscar bootcamp por id
+    const delBootcamp = await this.bootcampRepository.findOneBy({id});
+
+    if(!delBootcamp) {
+      throw new NotFoundException(`No existe`)
+    }
+   // borrar bootcamp
+   //Borrado
+    this.bootcampRepository.delete(delBootcamp)
+    //3, retonar el bootcap
+    //borrado
+    return delBootcamp
   }
 }

@@ -6,16 +6,24 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column('varchar')
+    @Column({type: 'varchar',
+            nullable: true
+    })
     name: string
 
-    @Column('varchar')
+    @Column({type: 'varchar',
+        nullable: true})
     email: string
     
-    @Column('varchar')
+    @Column({type: 'enum',
+            enum: ["Usuario", 
+                    "Editor", 
+                    "Administrador"],  
+        nullable: true})
     role: string
 
-    @Column('varchar')
+    @Column({type: 'varchar',
+        nullable: true})
     password: string
 
 }

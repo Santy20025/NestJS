@@ -13,26 +13,40 @@ export class UsersService {
   //la clase BootcampsService: sin
   //necesidad de instanciar 
   constructor(@InjectRepository(User) 
-        private bootcampRepository:
+        private usuarioRepository:
                 Repository<User> ){
         }
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  create(payload : any) {
+   const newusuario = this.usuarioRepository.create(payload)
+   return this.usuarioRepository.save(newusuario)
   }
 
   findAll() {
-    return this.bootcampRepository.find()
+    return this.usuarioRepository.find()
   }
 
   findOne(id: number) {
-    return this.bootcampRepository.findOneBy({id})
+    return this.usuarioRepository.findOneBy({id})
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, payload: any) {
+    //1. encontrar el usuario por id
+    const UpdUsuario = await this.usuarioRepository.findOneBy({id});
+    //2. hacer update: agregar cambios del payload 
+    //a la entidad hallada en el punto 1 
+    this.usuarioRepository.merge(UpdUsuario, payload)
+    //3, grabar cambios
+    return this.usuarioRepository.save(UpdUsuario)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    //Buscar Curso por id
+    const delUsuario = await this.usuarioRepository.findOneBy({id});
+   // borrar usuario
+   //Borrado
+    this.usuarioRepository.delete(delUsuario)
+    //3, retonar el bootcap
+    //borrado
+    return delUsuario
   }
 }

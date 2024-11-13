@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { BootcampsService } from './bootcamps.service';
 import { CreateBootcampDto } from './dto/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
@@ -8,10 +8,10 @@ export class BootcampsController {
   constructor(private readonly bootcampsService: BootcampsService) {}
 
   @Post()
-  create(@Body() payload: any ) {
+  create(@Body() payload: CreateBootcampDto ) {
     //payload: sinonimo del body, de la request
     //         Create, Update
-    return payload;
+    return this.bootcampsService.create(payload)
   }
 
   @Get()
@@ -19,17 +19,15 @@ export class BootcampsController {
     return this.bootcampsService.findAll();
   }
 
-  @Get(':id')
+  @Get(':id') 
   findOne(@Param('id') id: string) {
     return this.bootcampsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() payload:any) {
-    return {
-      id,
-      payload
-    };
+  update(@Param('id') id: string, @Body() payload:UpdateBootcampDto) {
+    return this.bootcampsService.update(+id, payload)
+
   }
 
   @Delete(':id')

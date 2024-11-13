@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm' 
+import { Course } from 'src/courses/entities/course.entity'
+import { Review } from 'src/reviews/entities/review.entity'
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm' 
+
 
 @Entity('Bootcamps')
 export class Bootcamp {
@@ -15,19 +18,30 @@ export class Bootcamp {
     name: string
 
     @Column('varchar',
-            {length: 20, default:"xxx"})
+            {length: 20})
     addres: string
 
     @Column('text')
     topics: string
 
-    @Column('double')
+    @Column({name:'average_rating',
+    })
     averageRating: number
 
-    @Column('date')
+    @Column({ 
+        name: 'created_at',
+         
+    })
     createdAt: Date
 
-  
+
+    @OneToMany(() => Course, 
+                (course) => course.bootcamp )
+    courses: Course[]
+
+    @OneToMany(() =>  Review,
+                (review) => review.bootcamp )
+                reviews: Course[]
 
 }
 

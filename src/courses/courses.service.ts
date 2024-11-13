@@ -14,26 +14,41 @@ export class CoursesService {
   //la clase BootcampsService: sin
   //necesidad de instanciar 
   constructor(@InjectRepository(Course) 
-        private bootcampRepository:
+        private cursoRepository:
                 Repository<Course> ){
         }
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+  create(body: CreateCourseDto) {
+    const newCurso = this.cursoRepository.create(body)
+    return this.cursoRepository.save(newCurso)
+    ;
   }
 
   findAll() {
-    return this.bootcampRepository.find()
+    return this.cursoRepository.find()
   }
 
   findOne(id: number) {
-    return this.bootcampRepository.findOneBy({id})
+    return this.cursoRepository.findOneBy({id: id})
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+  async update(id: number, body: UpdateCourseDto) {
+    //1. encontrar el bootcamp por id
+    const UpdCurso = await this.cursoRepository.findOneBy({id});
+    //2. hacer update: agregar cambios del payload 
+    //a la entidad hallada en el punto 1 
+    this.cursoRepository.merge(UpdCurso, body)
+    //3, grabar cambios
+    return this.cursoRepository.save(UpdCurso)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
+  async remove(id: number) {
+    //Buscar Curso por id
+    const delCurso = await this.cursoRepository.findOneBy({id});
+   // borrar Curso
+   //Borrado
+    this.cursoRepository.delete(delCurso)
+    //3, retonar el bootcap
+    //borrado
+    return delCurso
   }
 }
