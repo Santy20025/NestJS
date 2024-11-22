@@ -1,0 +1,22 @@
+meta {
+  name: Register
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3005/api/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    "email": "santyBorda@gmail.com",
+    "password": "Borda_20025"
+  }
+}
